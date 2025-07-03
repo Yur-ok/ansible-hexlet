@@ -7,3 +7,29 @@
         name: git
         state: present
       become: yes
+      tags: git
+
+    - name: update cache
+      ansible.builtin.apt:
+        update_cache: yes
+      tags: [apt, cache]
+
+    - name: create user 'ansib'
+      ansible.builtin.user:
+        name: ansib
+        password: "{{ 'ansib' | password_hash('sha512') }}"
+        comment: From ansible
+        shell: /bin/bash
+        groups: devteam
+        append: yes
+      become: yes
+      tags: user_add
+
+    - name: delete user 'ansib'
+      ansible.builtin.user:
+        name: ansib
+        state: absent
+        remove: yes
+      become: yes
+      tags: user_delete
+
