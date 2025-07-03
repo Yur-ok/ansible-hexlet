@@ -1,0 +1,9 @@
+- name: work on vbox linux
+  hosts: vbox
+
+  tasks:
+    - name: install git
+      ansible.builtin.apt:
+        name: git
+        state: present
+      become: yes
