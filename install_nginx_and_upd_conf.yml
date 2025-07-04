@@ -1,0 +1,33 @@
+- name: Установка Nginx и обновление конфигурации
+  hosts: remote
+
+  tasks:
+    - name: install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+      become: yes
+      tags: nginx
+
+    - name: copy index.html
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: /usr/share/nginx/html/index.html
+      become: yes
+      tags: nginx
+
+    - name: update nginx config
+      ansible.builtin.copy:
+        src: files/nginx.conf
+        dest: /etc/nginx/nginx.conf
+      notify:
+        - restart nginx
+      become: yes
+
+  handlers:
+    - name: restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+      become: yes
