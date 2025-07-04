@@ -1,0 +1,105 @@
+---
+- name: Создание пользователя и настройка Git на Linux
+  hosts: remote
+  become: yes
+  vars:
+    new_user: "yurok"
+    user_password: "{{ 'yurok' | password_hash('sha512') }}"
+    ssh_key_name: "personal_git"
+    git_user_name: "Yur-ok"
+    git_user_email: "materik-r@yandex.ru"
+    git_editor: "vim"
+
+  tasks:
+    - name: Создание нового пользователя
+      user:
+        name: "{{ new_user }}"
+        password: "{{ user_password }}"
+        shell: /bin/bash
+        state: present
+        create_home: yes
+      tags:
+        - user
+
+    - name: Добавление пользователя в группу sudo
+      user:
+        name: "{{ new_user }}"
+        groups: sudo
+        append: yes
+      when: ansible_os_family == "Debian"
+      tags:
+        - user
+
+    - name: Установка Ranger
+      ansible.builtin.apt:
+        name: ranger
+        state: present
+        update_cache: yes
+      tags:
+        - ranger
+
+    - name: Установка Git
+      ansible.builtin.apt:
+        name: git
+        state: present
+        update_cache: yes
+      tags:
+        - git
+
+    - name: Настройка глобального имени пользователя Git
+      become_user: "{{ new_user }}"
+      ansible.builtin.git_config:
+        name: user.name
+        scope: global
+        value: "{{ git_user_name }}"
+      tags:
+        - git
+
+    - name: Настройка глобального email пользователя Git
+      become_user: "{{ new_user }}"
+      ansible.builtin.git_config:
+        name: user.email
+        scope: global
+        value: "{{ git_user_email }}"
+      tags:
+        - git
+
+    - name: Установка редактора по умолчанию для Git
+      become_user: "{{ new_user }}"
+      ansible.builtin.git_config:
+        name: core.editor
+        scope: global
+        value: "{{ git_editor }}"
+      tags:
+        - git
+        
+    - name: Генерация SSH-ключа для Git
+      become_user: "{{ new_user }}"
+      command: ssh-keygen -t rsa -b 4096 -C "{{ git_user_email }}" -f "/home/{{ new_user }}/.ssh/{{ ssh_key_name }}" -N ""
+      args:
+        creates: "/home/{{ new_user }}/.ssh/{{ ssh_key_name }}"
+      tags:
+        - ssh
+
+    - name: Установка прав на SSH-ключи
+      file:
+        path: "/home/{{ new_user }}/.ssh/{{ ssh_key_name }}"
+        owner: "{{ new_user }}"
+        group: "{{ new_user }}"
+        mode: '0600'
+      tags:
+        - ssh
+
+    - name: Вывод публичного SSH-ключа
+      become_user: "{{ new_user }}"
+      command: cat "/home/{{ new_user }}/.ssh/{{ ssh_key_name }}.pub"
+      register: ssh_key
+      changed_when: false
+      tags:
+        - ssh
+
+    - name: Отображение публичного SSH-ключа для добавления в GitHub/GitLab
+      debug:
+        msg: "Добавьте этот ключ в ваш Git-сервис (например, GitHub): {{ ssh_key.stdout }}"
+      tags:
+        - ssh
