@@ -1,5 +1,8 @@
 - name: Установка Nginx и обновление конфигурации
   hosts: remote
+  vars:
+    root_dir: /etc/nginx
+    nginx_port: 80
 
   tasks:
     - name: install nginx
@@ -18,9 +21,9 @@
       tags: nginx
 
     - name: update nginx config
-      ansible.builtin.copy:
-        src: files/nginx.conf
-        dest: /etc/nginx/nginx.conf
+      ansible.builtin.template:
+        src: files/nginx.conf.j2
+        dest: "{{ root_dir }}/nginx.conf"
       notify:
         - restart nginx
       become: yes
