@@ -1,0 +1,49 @@
+---
+- name: Создание пользователя и настройка Git на Linux
+  hosts: remote
+  become: yes
+  vars:
+    git_editor: "vim"
+    users:
+     - { name: yurok, password: "{{ 'yurok' | password_hash('sha512') }}" }
+     - { name: jaime, password: "{{ 'jaime' | password_hash('sha512') }}" }
+     - { name: sansa, password: "{{ 'sansa' | password_hash('sha512') }}" }
+     - { name: robert, password: "{{ 'robert' | password_hash('sha512') }}" }
+
+  tasks:
+    - name: Создание нового пользователя
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        password: "{{ item.password }}"
+        shell: /bin/bash
+      loop: "{{ users }}"
+      tags: user
+        
+    - name: add gitconfig for each user
+      ansible.builtin.template:
+        src: files/.gitconfig.j2
+        dest: "/home/{{ item.name }}/.gitconfig"
+      become: yes
+      loop: "{{ users }}"
+      tags: nginx
+
+    - name: enshure .ssh directory exist
+      ansible.builtin.file:
+        path: "/home/{{ item.name }}/.ssh"
+        state: directory
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: '0700'
+      loop: "{{ users }}"
+      tags: ssh
+
+
+    - name: add ssh key libnvkz_test.pub for each user
+      ansible.builtin.copy:
+        src: files/libnvkz_test.pub
+        dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: '0600'
+      loop: "{{ users }}"
+      tags: ssh
