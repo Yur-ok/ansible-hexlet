@@ -1,0 +1,15 @@
+Script started on Thu Jul  3 07:36:36 2025
+[1m[7m%[27m[1m[0m                                                                                                                                                                              k..exlet/Ansible\]7;file://RZ-ITD-MAC312/Users/yuriy.bachevskiy/WebDevMan/test-projects/Hexlet/Ansible\[0m[27m[24m[J[01;36m☁ [01;32m [32mAnsible [01;36m[32m[[36mmain[32m] [33m⚡ [00m[00m[01;34m [00m[K[?1h=[?2004h[0m[27m[24m[J[01;36m☁ [01;32m [32mAnsible [01;36m[32m[[36mmain[32m] [33m⚡ [00m[00m[01;34m [00m[Km[1m[31mm[0m[39m[1m[31mm[0m[39m[90make ad-hoc-ping[39m[15D[1m[31mm[0m[39m[39ma[39mk[39me[39m [39ma[39md[39m-[39mh[39mo[39mc[39m-[39mp[39mi[39mn[39mg[16D[0m[32mm[32ma[32mk[32me[39m[12C[?1l>[?2004l
+kmake\ansible all -i inventory.ini -u yurok -m ping
+[1;35m[WARNING]: Platform linux on host localhost is using the discovered Python interpreter at /usr/bin/python3.11, but future installation of another Python interpreter could[0m
+[1;35mchange the meaning of that path. See https://docs.ansible.com/ansible-core/2.18/reference_appendices/interpreter_discovery.html for more information.[0m
+[0;32mlocalhost | SUCCESS => {[0m
+[0;32m    "ansible_facts": {[0m
+[0;32m        "discovered_interpreter_python": "/usr/bin/python3.11"[0m
+[0;32m    },[0m
+[0;32m    "changed": false,[0m
+[0;32m    "ping": "pong"[0m
+[0;32m}[0m
+[1m[7m%[27m[1m[0m                                                                                                                                                                              k..exlet/Ansible\]7;file://RZ-ITD-MAC312/Users/yuriy.bachevskiy/WebDevMan/test-projects/Hexlet/Ansible\[0m[27m[24m[J[01;36m☁ [01;32m [32mAnsible [01;36m[32m[[36mmain[32m] [33m⚡ [00m[00m[01;34m [00m[K[?1h=[?2004h[?2004l
+
+Script done on Thu Jul  3 07:36:42 2025
