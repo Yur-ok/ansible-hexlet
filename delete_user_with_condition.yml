@@ -1,0 +1,14 @@
+---
+- name: Удаление пользователя 
+  hosts: remote
+  become: yes
+  vars:
+    git_editor: "vim"
+
+  tasks:
+    - name: Удаление пользователя с условием
+      ansible.builtin.user:
+        name: "{{ user_to_remove }}"
+        state: absent
+      when: user_to_remove is defined and user_to_remove != 'root'
+      tags: user
