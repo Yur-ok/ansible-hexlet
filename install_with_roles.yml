@@ -1,0 +1,11 @@
+- name: Установка с помощью ролей
+  hosts: remote
+
+  tasks:
+    - import_role:
+        name: darkwizard242.lazydocker
+      become: yes
+
+    - import_role:
+        name: darkwizard242.lazygit
+      become: yes
