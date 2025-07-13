@@ -5,6 +5,24 @@
     nginx_port: 80
 
   tasks:
+    - name: install cowsay
+      ansible.builtin.apt:
+        name: cowsay
+        state: present
+        update_cache: yes
+      become: yes
+      tags: cowsay
+
+    - name: cowsay result
+      ansible.builtin.shell: cowsay "This is server {{ server_name }} !!!"
+      register: cowsay_result
+      tags: cowsay
+
+    - name: debuging
+      ansible.builtin.debug:
+        var: cowsay_result
+      tags: cowsay
+
     - name: install nginx
       ansible.builtin.apt:
         name: nginx
